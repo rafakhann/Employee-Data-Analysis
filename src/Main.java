@@ -8,15 +8,15 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 class Employee {
-    private String educationLevel;
-    private int joiningYear;
-    private String city;
-    private int paymentTier; // Change to int
-    private int age;
-    private String gender;
-    private boolean benchStatus;
-    private int experienceInCurrentDomain;
-    private boolean hasLeftCompany;
+    private final String educationLevel;
+    private final int joiningYear;
+    private final String city;
+    private final int paymentTier; // Change to int
+    private final int age;
+    private final String gender;
+    private final boolean benchStatus;
+    private final int experienceInCurrentDomain;
+    private final boolean hasLeftCompany;
 
     // Constructor
     public Employee(String educationLevel, int joiningYear, String city, int paymentTier, int age,
