@@ -125,8 +125,10 @@ public class EmployeeAnalyzer {
         for (Employee employee : employeeList) {
             // Handle missing or invalid data for paymentTier (assuming paymentTier cannot be negative)
                 // Set a default paymentTier value
+            if (employee.getPaymentTier() < 0) {
                 employee.setPaymentTier(0);
-            // Assuming "hasLeftCompany" values are already in 0 and 1
+            }
+            // "hasLeftCompany" values are already in 0 and 1
             // Convert "yes" to 1, "no" to 0 for "benchStatus"
             employee.setBenchStatus(convertBenchStatus(employee.getBenchStatus() == 1 ? "YES" : "NO"));
         }
@@ -134,8 +136,8 @@ public class EmployeeAnalyzer {
 
     private static void analyzeData(List<Employee> employeeList) {
         CompletableFuture<Void> statisticsAnalysis = CompletableFuture.runAsync(() -> {
-            // Implement statistics analysis using Java streams and lambda expressions
-            // Example: Calculate average age, education level distribution, gender ratio
+            // statistical analysis (using Java streams and lambda expressions)
+            // Calculated: average age, education level distribution, gender ratio
             double averageAge = employeeList.stream()
                     .mapToInt(Employee::getAge)
                     .average()
@@ -143,7 +145,7 @@ public class EmployeeAnalyzer {
 
             long educationLevelDistribution = employeeList.stream()
                     .collect(Collectors.groupingBy(Employee::getEducationLevel, Collectors.counting()))
-                    .entrySet().size(); // Use count() here to get the number of education levels
+                    .entrySet().size();
 
 
 
@@ -159,8 +161,8 @@ public class EmployeeAnalyzer {
         });
 
         CompletableFuture<Void> retentionAnalysis = CompletableFuture.runAsync(() -> {
-            // Implement retention analysis using Java streams and lambda expressions
-            // Example: Analyze factors affecting employee retention
+            // retention analysis
+            // Analyze factors affecting employee retention
             long nonRetainedCount = employeeList.stream()
                     .filter(employee -> employee.getHasLeftCompany() == 1)
                     .count();
@@ -174,9 +176,9 @@ public class EmployeeAnalyzer {
         });
 
         CompletableFuture<Void> segmentationAnalysis = CompletableFuture.runAsync(() -> {
-            //segmentation analysis (using Java streams and lambda expressions)
+            //segmentation analysis
             // Segment employees based on attributes for targeted analysis
-            System.out.println("Segmentation Analysis: (Example - City Wise)");
+            System.out.println("Segmentation Analysis: (City Wise)");
 
             employeeList.stream()
                     .collect(Collectors.groupingBy(Employee::getCity))
