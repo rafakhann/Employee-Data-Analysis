@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -108,7 +109,7 @@ public class EmployeeAnalyzer {
 
     private static Employee createEmployeeFromCsv(String line) {
         String[] attributes = line.split(",");
-        // Assuming CSV format: educationLevel,joiningYear,city,paymentTier,age,gender,benchStatus,experienceInCurrentDomain,hasLeftCompany
+        //CSV format: educationLevel,joiningYear,city,paymentTier,age,gender,benchStatus,experienceInCurrentDomain,hasLeftCompany
         return new Employee(attributes[0], Integer.parseInt(attributes[1]), attributes[2],
                 Integer.parseInt(attributes[3]), Integer.parseInt(attributes[4]), attributes[5],
                 convertBenchStatus(attributes[6]), Integer.parseInt(attributes[7]),
@@ -116,12 +117,12 @@ public class EmployeeAnalyzer {
     }
 
     private static int convertBenchStatus(String benchStatus) {
-        // Convert "yes" to 1, "no" to 0, and handle other cases
+        // Convert "yes" to 1, "no" to 0
         return "yes".equalsIgnoreCase(benchStatus) ? 1 : 0;
     }
 
     private static void preprocessData(List<Employee> employeeList) {
-        // Handling missing or invalid data, if needed
+        // Handling missing or invalid data
         for (Employee employee : employeeList) {
             // Handle missing or invalid data for paymentTier (assuming paymentTier cannot be negative)
                 // Set a default paymentTier value
@@ -133,6 +134,40 @@ public class EmployeeAnalyzer {
             employee.setBenchStatus(convertBenchStatus(employee.getBenchStatus() == 1 ? "YES" : "NO"));
         }
     }
+
+
+    private static void analyzePaymentTier(List<Employee> employeeList) {
+        //System.out.println("Payment Tier Analysis:");
+
+        Map<Integer, Long> paymentTierDistribution = employeeList.stream()
+                .collect(Collectors.groupingBy(Employee::getPaymentTier, Collectors.counting()));
+
+        paymentTierDistribution.forEach((paymentTier, count) ->
+                System.out.println("Payment Tier " + paymentTier + ": " + count));
+    }
+
+    //Analyzing factors affecting employee retention, such as payment tier, bench status,
+    // and experience in the current domain:
+    private static void analyzeBenchStatus(List<Employee> employeeList) {
+        System.out.println("Bench Status Analysis:");
+
+        Map<Integer, Long> benchStatusDistribution = employeeList.stream()
+                .collect(Collectors.groupingBy(Employee::getBenchStatus, Collectors.counting()));
+
+        benchStatusDistribution.forEach((benchStatus, count) ->
+                System.out.println("Bench Status " + benchStatus + ": " + count));
+    }
+
+    private static void analyzeExperienceInCurrentDomain(List<Employee> employeeList) {
+       // System.out.println("Experience in Current Domain Analysis:");
+
+        Map<Integer, Long> experienceDistribution = employeeList.stream()
+                .collect(Collectors.groupingBy(Employee::getExperienceInCurrentDomain, Collectors.counting()));
+
+        experienceDistribution.forEach((experience, count) ->
+                System.out.println("Experience in Current Domain " + experience + ": " + count));
+    }
+
 
     private static void analyzeData(List<Employee> employeeList) {
         CompletableFuture<Void> statisticsAnalysis = CompletableFuture.runAsync(() -> {
@@ -178,25 +213,35 @@ public class EmployeeAnalyzer {
         CompletableFuture<Void> segmentationAnalysis = CompletableFuture.runAsync(() -> {
             //segmentation analysis
             // Segment employees based on attributes for targeted analysis
-            System.out.println("Segmentation Analysis: (City Wise)");
+           // System.out.println("Segmentation Analysis: (City Wise)");
 
             employeeList.stream()
                     .collect(Collectors.groupingBy(Employee::getCity))
                     .forEach((city, employees) -> {
                         long cityEmployeeCount = employees.size();
-                        System.out.println(city + ": " + cityEmployeeCount);
+                        System.out.println("Segmentation Analysis: (City Wise): "+city + ": " + cityEmployeeCount);
                     });
         });
 
+        CompletableFuture<Void> retentionFactorsAnalysis = CompletableFuture.runAsync(() -> {
+            // Analyze factors affecting employee retention
+            //System.out.println("Retention Factors Analysis:");
 
-        CompletableFuture.allOf(statisticsAnalysis, retentionAnalysis, segmentationAnalysis).join();
+            // Example: Analyzing payment tier, bench status, and experience in the current domain
+            analyzePaymentTier(employeeList);
+            analyzeBenchStatus(employeeList);
+            analyzeExperienceInCurrentDomain(employeeList);
 
-        // Generate and print analysis reports
+        });
+
+
+        CompletableFuture.allOf(statisticsAnalysis, retentionAnalysis, segmentationAnalysis,retentionFactorsAnalysis).join();
+
+        //Generate and print analysis reports
         generateReports();
     }
 
     private static void generateReports() {
-
-        System.out.println("Reports Generated");
+        System.out.println("Report Generated.");
     }
 }
