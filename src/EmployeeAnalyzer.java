@@ -135,7 +135,8 @@ public class EmployeeAnalyzer {
         }
     }
 
-
+//Analyzing factors affecting employee retention, such as payment tier, bench status,
+// and experience in the current domain:
     private static void analyzePaymentTier(List<Employee> employeeList) {
         //System.out.println("Payment Tier Analysis:");
 
@@ -146,8 +147,7 @@ public class EmployeeAnalyzer {
                 System.out.println("Payment Tier " + paymentTier + ": " + count));
     }
 
-    //Analyzing factors affecting employee retention, such as payment tier, bench status,
-    // and experience in the current domain:
+
     private static void analyzeBenchStatus(List<Employee> employeeList) {
         System.out.println("Bench Status Analysis:");
 
